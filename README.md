@@ -1,4 +1,4 @@
-# NODEJSREACTNATIVEStore
+# NODEJS-REACTNATIVE-MYSQL Store Example
 
 ## Description
 This is a project created to give an easy to use example of how to use a `NodeJS server` as a backend to a `React native` front end. We use mysql databases on a local xampp webserver to storage the data.
@@ -11,19 +11,12 @@ In the example we have a online shop with products, price and name. You are able
 * **PHPMYADMIN Database**: A sql file which i have had run o an phpmyadmin database, it contains a product tabell with name and price as columns
 * **HTML Site**: A easy site with html and javascript that can be used to very easily test your backend and its connections.
 * **Documentation**: The most important code is commentated in either English, Swedish or Swenglish
-* **Standard**: Just HTTP!
-* **Explicit**: No middleware - modules declare all [dependencies](https://github.com/amio/awesome-micro)
-* **Lightweight**: With all dependencies, the package weighs less than a megabyte
-
 #Instructions
 Everywhere when i have used  my ip adress 10.20.22... etc change it to your own with ipconfig and take the ipv4 adress.
 ## Backend
 ### NODE JS
 To run open the folder in terminal, write nodemon and it will run on localhost:3000
-If this do not work then run npm install
-
-
-
+If this do not work then run npm install.
 ###MYSQL
 Import the store.sql file to your database.
 
