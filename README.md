@@ -11,7 +11,7 @@ In the example we have a online shop with products, price and name. You are able
 * **PHPMYADMIN Database**: A sql file which i have had run o an phpmyadmin database, it contains a product tabell with name and price as columns
 * **HTML Site**: A easy site with html and javascript that can be used to very easily test your backend and its connections.
 * **Documentation**: The most important code is commentated in either English, Swedish or Swenglish
-#Instructions
+###Instructions
 Everywhere when i have used  my ip adress 10.20.22... etc change it to your own with ipconfig and take the ipv4 adress.
 ## Backend
 ### NODE JS
@@ -24,5 +24,6 @@ Import the store.sql file to your database.
 ### React Native
 To run open the folder in terminal, write npm start and it will run on your computers ip adress.
 If this do not work then run npm install
+:+1:
 
 
