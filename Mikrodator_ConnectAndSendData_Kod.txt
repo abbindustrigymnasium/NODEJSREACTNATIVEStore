@@ -1,0 +1,93 @@
+
+#include <ESP8266WiFi.h>     
+//Både ArduinoJson och Wifimanager måste installeras som bibliotek, de finns med i bibliotekskatalogen, tänk att ArduinoJSon versionen som ska väljas är 5.13 och inte senaste.     
+#include <ArduinoJson.h> // V 5.13 inte 6! https://arduinojson.org/?utm_source=meta&utm_medium=library.properties
+//needed for library
+#include <DNSServer.h>
+#include <ESP8266WebServer.h>
+#include <WiFiManager.h>         //https://github.com/tzapu/WiFiManager
+
+
+
+void setup() {
+    // put your setup code here, to run once:
+    Serial.begin(115200);
+  //Från Wifimanagers hemsida.
+    //WiFiManager
+    //Local intialization. Once its business is done, there is no need to keep it around
+    WiFiManager wifiManager;
+    //reset saved settings
+   // wifiManager.resetSettings();
+    
+    //set custom ip for portal
+    //wifiManager.setAPStaticIPConfig(IPAddress(10,0,1,1), IPAddress(10,0,1,1), IPAddress(255,255,255,0));
+
+    //fetches ssid and pass from eeprom and tries to connect
+    //if it does not connect it starts an access point with the specified name
+    //here  "AutoConnectAP"
+    //and goes into a blocking loop awaiting configuration
+    wifiManager.autoConnect("Connecttor");
+    //or use this for auto generated name ESP + ChipID
+    //wifiManager.autoConnect();
+
+    
+    //if you get here you have connected to the WiFi
+    Serial.println("connected...yeey :)");
+}
+
+
+
+void loop() {
+  
+    // put your main code here, to run repeatedly:
+     Serial.print("connecting to ");
+  Serial.println(host);
+  
+  // Use WiFiClient class to create TCP connections
+  WiFiClient client;
+  const int httpPort = 3000; //porten vi ska till
+  const char* host = "iot.abbindustrigymnasium.se";//Adressen vi ska ansluta till.
+  if (!client.connect(host, httpPort)) { //Försöker ansluta
+    Serial.println("connection failed");
+    return;
+  }
+
+
+String url= "/products/"; //Urlen jag använder för att posta mina värden
+  StaticJsonBuffer<300> jsonBuffer; //Skapar en buffer, det vill säga så mycket minne som vårt blivande jsonobjekt får använda.
+  JsonObject& root = jsonBuffer.createObject(); //Skapar ett jsonobjekt som vi kallar root
+  root["name"] = "Vykort"; //Skapar parameterna name och ger den värdet Vykort
+  root["price"] = 12; // Samma som ovan
+  String buffer;  //Skapar en string som vi kallar buffer
+  root.printTo(buffer); //Lägger över och konverterar vårt jsonobjekt till en string och sparar det i buffer variabeln.
+  Serial.println(host); //Skriver ut i terminalen för att veta vart vi ska skicka värdena.
+  
+  // Detta skickar värdena till servern.
+  client.print(String("POST ") + url + " HTTP/1.1\r\n" + //Säger att det är typen post, kan vara patch, get,delete beroende på vad man vill göra., samt urlen vi ska till.
+                 "Host: " + host+ "\r\n" + //Berättar vilken host det är vi ansluter till
+                 "Content-Type: application/json\r\n" + //Säger att det är Json format vi skickar (dock konverterat till en string för att kunna skickas.
+                 "Content-Length: " + buffer.length() + "\r\n" + //Berättar hur stort packet vi ska skicka.
+                 "\r\n" + // Detta är en extra radbrytning för att berätta att det är här bodyn startar.
+                 buffer + "\n"); //skickar vår buffer som  body
+  unsigned long timeout = millis();
+  while (client.available() == 0) {
+    if (millis() - timeout > 5000) {
+      Serial.println(">>> Client Timeout !");
+      client.stop();
+      return;
+    }
+  }
+
+  // Läser svaren från backenden och skriver ut det i terminalen
+  while(client.available()){
+    String line = client.readStringUntil('\r');
+    Serial.print(line);
+  }
+  
+  Serial.println();
+  Serial.println("closing connection");
+
+
+  delay(1000);
+    
+}
