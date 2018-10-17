@@ -37,7 +37,7 @@ router.get('/:age&:name', (req, res, next) => {
     //req.body.name Skillnad = body tar det från kroppen medans params tar det från sökfältet
 const Age = req.params.age;
 const Name=  req.params.name;
-const Lenght= req. params.lenght;
+const Lenght= req.body.lenght;
 });
 ```
 ### Jag får "Error: Can't set headers after they are sent.", varför?
