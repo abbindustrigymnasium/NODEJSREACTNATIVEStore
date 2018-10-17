@@ -3,8 +3,8 @@ const  router = express();
 var mysql = require("mysql");
 var con = mysql.createConnection({
   host: "localhost",
-  user: "root",
-  password: "",
+  user: "jocke",
+  password: "xbox",
   database: "store"
 });
 con.connect(function(err) {
@@ -16,6 +16,7 @@ con.connect(function(err) {
 
 router.get('/', (req, res, next) => {
 
+    console.log(req.body);
 
     con.query("SELECT * FROM products", function (err, result, fields) {
       if (err) throw err;
@@ -32,12 +33,13 @@ router.get('/', (req, res, next) => {
 
 
 
-router.post('/', (req, res, next) => { //  '/'= indexfilen i localhost/products/   req = request , res= resultat , next = det som ska hända senare 
+router.post('/', (req, res) => { //  '/'= indexfilen i localhost/products/   req = request , res= resultat , next = det som ska hända senare 
     const product={ //skapar ett objekt.
         name: req.body.name,
         price: req.body.price
     }
-
+console.log(req.body);
+console.log(req.body.name);
     if(req.body.name==null){ //om det inte finns något namn i bodyn så vet vi att det är [] ivägen för innehållet därav är måsste vi veta det och ändra produktens namn och pris
         //Förklaring till raden ovan, är det bra direkt så är koden {name: "Exempel", price: "13"} är den inte bra så är den [{name: "Exempel", price: "13"}] alltså är det en lista med ett objekt i.
     product.name= req.body[0].name; //Vi tar första objektet(enda på det sättet vi lagt upp koden nu) och använder dess namn
@@ -47,13 +49,13 @@ router.post('/', (req, res, next) => { //  '/'= indexfilen i localhost/products/
     var createProduct = function(){ //Skapar funktionen
         return new Promise(function(resolve,reject){ //Skapar löftet
             //[[ value]] , [[ [product.name,product.price]]] 
-            var Theproduct = [product.name,product.price];
-            con.query('INSERT INTO products (name, price) VALUES ?',[[Theproduct]], function(err,result) {
+           //Tog bort the product då det är onödig virrighet, använder products grejer direkt.
+            con.query('INSERT INTO products (name, price) VALUES ?',[[[product.name,product.price]]], function(err,result) {
       
               if(err){                
                   return reject(err);
               }else{              
-                  return resolve(Theproduct);
+                  return resolve(product);
               }
       
           }); // query
@@ -62,16 +64,14 @@ router.post('/', (req, res, next) => { //  '/'= indexfilen i localhost/products/
 
       createProduct().then( Theproduct => {
         res.status(200).json({ //Här kan man som jag gjort lägga till en status 200, OBS tänk på att 201 kommer
-            message: "Success, new product created",// nästan aldrig köras då, så bästa är att ändra till 201 i din frontEnd eller 201 här i backend.
-        Product: Theproduct //I detta exempel skickar 200 bara produkten medans 201 skickar meddelandet med.
+            message: "Success, new product created" //I detta exempel skickar 200 bara produkten medans 201 skickar meddelandet med.
     });
-        res.status(201).json({  message: "Success, new product created",
-                                Product: Theproduct
-                            });
+    //Tog bort res.status(201) då dubbla status skickningar skapar error, vill man ha möjlighet till bägge så gör if else satser och lägg dem i.
+    
     }).catch(err => {
+        console.log(err);
         res.status(500).json({
-            error: err,
-            message:"HEJ"
+            error: err
         });
     });
 });
@@ -179,48 +179,7 @@ router.delete('/:productName', (req, res, next) => {
         });
     });
 
-/*    con.query('DELETE FROM posts WHERE title = "wrong"', function (error, results, fields) {
-        if (error) throw error;
-        console.log('deleted ' + results.affectedRows + ' rows');
-      })
-
-    res.status(200).json({
-        message: 'Deleteed'
-    })*/
-});
 
 module.exports= router;
 
 
-
-   // con.query("SELECT * FROM products  WHERE `name` = ?", [id], function (err, result, fields) {
-   /*   if (err)
-      {
-        res.status_(500).json({
-            error: err
-        });
-      }
-      console.log(result);
-
-   if (id === "special") {
-       res.status(200).json({
-           message: 'You discovered',
-           id: id
-       })
-   }
-   else
-   {
-    console.log(result.length);
-       if(result.length==0)
-       res.send('No such value exist');
-       else{
-       res.json(result);*/
-      /*res.status(200).json({
-        message: 'You Passed ID '+id,
-        result: result
-    })*/
-    //   }
-
-   //}
-
-    //})
