@@ -1,4 +1,3 @@
-# NODEJS-REACTNATIVE-MYSQL Store Example
 
 ## Description
 This is a project created to give an easy to use example of how to use a `NodeJS server` as a backend to a `React native` front end. We use mysql databases on a local xampp webserver to storage the data.
@@ -27,4 +26,20 @@ To run open the folder in terminal, write npm start and it will run on your comp
 If this do not work then run npm install
 :+1:
 
+# FAQ:
+## Backend
+### Jag vill ha flera parametrar in från params(urlfältet) hur gör man det? 
+Du gör bara ett & mellan dem.
+Exempel:
+```
+router.get('/:age&:name', (req, res, next) => {
+ 
+    //req.body.name Skillnad = body tar det från kroppen medans params tar det från sökfältet
+const Age = req.params.age;
+const Name=  req.params.name;
+const Lenght= req. params.lenght;
+});
+```
+### Jag får "Error: Can't set headers after they are sent.", varför?
+Du skickar tillbaka två res.status(); , vill man ha att det antingen kan vara res.status(200).json(result); eller res.status(201.json(result); så får man lägga det i en ifsats. Så se till att bara returnerna en status i din then.
 
