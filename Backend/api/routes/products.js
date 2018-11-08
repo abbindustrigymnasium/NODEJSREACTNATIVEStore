@@ -3,8 +3,8 @@ const  router = express();
 var mysql = require("mysql");
 var con = mysql.createConnection({
   host: "localhost",
-  user: "jocke",
-  password: "xbox",
+  user: "root",
+  password: "",
   database: "store"
 });
 con.connect(function(err) {
@@ -179,7 +179,7 @@ router.delete('/:productName', (req, res, next) => {
         });
     });
 
-
+});
 module.exports= router;
 
 
